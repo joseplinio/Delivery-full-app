@@ -1,0 +1,77 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.9/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": false
+	},
+	"css": {
+		"linter": {
+			"enabled": true
+		},
+		"formatter": {
+			"enabled": true
+		}
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": ["**"]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab"
+	},
+	"assist": { "actions": { "source": { "organizeImports": "on" } } },
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": false,
+			"a11y": {
+				"noAriaUnsupportedElements": "warn",
+				"useAltText": "warn",
+				"useAriaPropsForRole": "warn",
+				"useValidAriaProps": "warn",
+				"useValidAriaValues": "warn"
+			},
+			"correctness": {
+				"noChildrenProp": "error",
+				"useExhaustiveDependencies": "off",
+				"useHookAtTopLevel": "off",
+				"useJsxKeyInIterable": "error",
+				"noUnusedVariables": {
+					"level": "warn"
+				},
+				"noUnusedImports": {
+					"fix": "safe",
+					"level": "error"
+				}
+			},
+			"security": {
+				"noDangerouslySetInnerHtmlWithChildren": "error",
+				"noBlankTarget": "off"
+			},
+			"suspicious": {
+				"noCommentText": "error",
+				"noDuplicateJsxProps": "error"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"fix": "safe",
+					"level": "warn",
+					"options": {}
+				}
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"semicolons": "asNeeded",
+			"quoteStyle": "double",
+			"jsxQuoteStyle": "double",
+			"bracketSameLine": false
+		},
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		}
+	}
+}
