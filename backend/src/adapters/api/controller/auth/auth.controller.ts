@@ -1,23 +1,25 @@
 import { Controller, Post, Body } from "@nestjs/common"
-import { SignInDto } from "src/aplication/interfaces/dto/sign.in.dto"
-import { SignUpDto } from "src/aplication/interfaces/dto/sign.up.dto"
-import type { IUseCase } from "src/aplication/interfaces/use_case/use.case"
-import { UserEntity } from "src/entities/user.entity"
+import { SignInDto } from "src/application/interfaces/dto/sign-in-dto"
+import { SignUpDto } from "src/application/interfaces/dto/sign-up-dto"
+import { SignInCase } from "src/use_case/auth/sign.in.case"
+import { SignUpCase } from "src/use_case/auth/sign.up.case"
 
 @Controller("auth")
 export class AuthController {
 	constructor(
-		private readonly signUpCase: IUseCase<SignUpDto, UserEntity>,
-		private readonly signInCase: IUseCase<SignInDto, UserEntity>,
+		private readonly signUpCase: SignUpCase,
+		private readonly signInCase: SignInCase,
 	) {}
 
-	@Post()
+	@Post("signup")
 	async signUp(@Body() signUpDto: SignUpDto) {
-		return this.signUpCase.handler(signUpDto)
+		const signUpResult = await this.signUpCase.handler(signUpDto)
+		return signUpResult
 	}
 
-	@Post()
+	@Post("signin")
 	async signIn(@Body() signInDto: SignInDto) {
-		return this.signInCase.handler(signInDto)
+		const signInResult = await this.signInCase.handler(signInDto)
+		return signInResult
 	}
 }
