@@ -3,7 +3,7 @@ import { UserRepository } from "src/adapters/spi/db/repositories/userRepository/
 import { HashService } from "../hash/hash.service"
 import { UserMapper } from "src/application/mapper/user/user.mapper"
 import { JwtService } from "@nestjs/jwt"
-import { UserEntity } from "src/entities/user/user.entity"
+import { TyJwtPayload } from "src/application/types/auth.jwt.payload"
 
 @Injectable()
 export class AuthService {
@@ -22,10 +22,24 @@ export class AuthService {
       pass,
       user.password,
     )
-    if (!isPasswordMatch) throw new UnauthorizedException("Unvalid credations!")
+    if (!isPasswordMatch)
+      throw new UnauthorizedException("Unvalid credantions!")
 
     const cleanUser = await this.userMapper.cleanUser(user)
     return cleanUser
   }
 
+  async signIn(userData: { email: string; password: string }): Promise<object> {
+    const user = await this.userRepository.findByEmail(userData.email)
+
+    if (!user) throw new UnauthorizedException("User not found!")
+    const payload: TyJwtPayload = { sub: user.id }
+
+    const signInResult = {
+      userId: user.id,
+      access_token: this.jwtService.sign(payload),
+    }
+
+    return signInResult
+  }
 }
