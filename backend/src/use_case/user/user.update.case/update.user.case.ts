@@ -6,27 +6,26 @@ import { UserMapper } from "src/application/mapper/user/user.mapper"
 
 @Injectable()
 export class UpdateUserCase implements IUseCase<object, object | null> {
-	constructor(
-		private readonly userRepository: UserRepository,
-		private readonly userMapper: UserMapper,
-	) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly userMapper: UserMapper,
+  ) { }
 
-	async handler({ id, ...data }: UpdateUserInput): Promise<object | null> {
-		try {
-			const user = await this.userRepository.findOne(id)
-			if (!user) {
-				throw new NotFoundException("usuario nâo encontrado")
-			}
+  async handler({ id, ...data }: UpdateUserInput): Promise<object | null> {
+    try {
+      const user = await this.userRepository.findById(id)
+      if (!user) {
+        throw new NotFoundException("usuario nâo encontrado")
+      }
 
-			const updateUser = await this.userRepository.update(id, {
-				...data,
-			})
+      const updateUser = await this.userRepository.update(id, {
+        ...data,
+      })
 
-			const updateUserResult = await this.userMapper.cleanUser(updateUser)
-			return updateUserResult
-
-		} catch (err) {
-			throw err
-		}
-	}
+      const updateUserResult = await this.userMapper.cleanUser(updateUser)
+      return updateUserResult
+    } catch (err) {
+      throw err
+    }
+  }
 }
