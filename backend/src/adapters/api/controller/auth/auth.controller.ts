@@ -1,51 +1,54 @@
 import { Controller, Post, Body, Req, UseGuards, Get } from "@nestjs/common"
-import { JwtAuthGuard } from "src/adapters/spi/auth/guards/jwt/jwt.guard"
+import { JwtAccessAuthGuard } from "src/adapters/spi/auth/guards/jwt/access/jwt.access.guard"
+import { JwtRefreshAuthGuard } from "src/adapters/spi/auth/guards/jwt/refresh/jwt.refresh.guard.guard"
 import { LocalAuthGuard } from "src/adapters/spi/auth/guards/local-auth/local.auth.guard"
 import { SignInDto } from "src/application/interfaces/dto/sign.in.dto"
 import { SignUpDto } from "src/application/interfaces/dto/sign.up.dto"
 import { DtoValidatorService } from "src/application/services/dto/dto.validator.service"
 import { GetAccountCase } from "src/use_case/auth/get.account.case"
+import { RefreshCase } from "src/use_case/auth/refresh.case/refresh.case"
 import { SignInCase } from "src/use_case/auth/sign.in.case"
 import { SignUpCase } from "src/use_case/auth/sign.up.case"
 
 @Controller("auth")
 export class AuthController {
-  constructor(
-    private readonly signUpCase: SignUpCase,
-    private readonly signInCase: SignInCase,
-    private readonly getAccount: GetAccountCase,
-    private readonly dtoValidatior: DtoValidatorService,
-  ) { }
+	constructor(
+		private readonly signUpCase: SignUpCase,
+		private readonly signInCase: SignInCase,
+		private readonly getAccount: GetAccountCase,
+		private readonly refreshCase: RefreshCase,
+		private readonly dtoValidatior: DtoValidatorService,
+	) {}
 
-  @Post("sign-up")
-  async signUp(@Body() signUpBody: SignUpDto) {
-    try {
-      const signUpDto = await this.dtoValidatior.valideDto<SignUpDto>(
-        SignUpDto,
-        signUpBody,
-      )
-      const signUpResult = await this.signUpCase.handler(signUpDto)
+	@Post("sign-up")
+	async signUp(@Body() signUpBody: SignUpDto) {
+		try {
+			const signUpDto = await this.dtoValidatior.valideDto<SignUpDto>(
+				SignUpDto,
+				signUpBody,
+			)
+			const signUpResult = await this.signUpCase.handler(signUpDto)
 
-      return signUpResult
-    } catch (err) {
-      throw err
-    }
-  }
+			return signUpResult
+		} catch (err) {
+			throw err
+		}
+	}
 
-  @Post("sign-in")
-  @UseGuards(LocalAuthGuard)
-  async signIn(@Body() signInBody: SignInDto) {
-    try {
-      const signInDto = await this.dtoValidatior.valideDto<SignInDto>(
-        SignInDto,
-        signInBody,
-      )
-      const singInResult = await this.signInCase.handler(signInDto)
-      return singInResult
-    } catch (err) {
-      throw err
-    }
-  }
+	@Post("sign-in")
+	@UseGuards(LocalAuthGuard)
+	async signIn(@Body() signInBody: SignInDto) {
+		try {
+			const signInDto = await this.dtoValidatior.valideDto<SignInDto>(
+				SignInDto,
+				signInBody,
+			)
+			const singInResult = await this.signInCase.handler(signInDto)
+			return singInResult
+		} catch (err) {
+			throw err
+		}
+	}
 
   @Post("sign-out")
   @UseGuards(LocalAuthGuard)
@@ -60,14 +63,25 @@ export class AuthController {
       //
       // return signInResult
 
-  @Get("account")
-  @UseGuards(JwtAuthGuard)
-  async account(@Req() req: any) {
-    try {
-      const getAccountResult = await this.getAccount.handler(req.user.userId)
-      return getAccountResult
-    } catch (err) {
-      throw err
-    }
-  }
+	@Get("account")
+	@UseGuards(JwtAccessAuthGuard)
+	async account(@Req() req: any) {
+		try {
+			const getAccountResult = await this.getAccount.handler(req.user.userId)
+			return getAccountResult
+		} catch (err) {
+			throw err
+		}
+	}
+
+	@Post("refresh")
+	@UseGuards(JwtRefreshAuthGuard)
+	async refresh(@Req() req: any) {
+		try {
+			const refreshResult = await this.refreshCase.handler(req.user.userId)
+			return refreshResult
+		} catch (err) {
+			throw err
+		}
+	}
 }
