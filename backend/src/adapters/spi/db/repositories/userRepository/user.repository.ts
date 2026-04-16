@@ -24,15 +24,27 @@ export class UserRepository implements IUserRepository<UserEntity, UserEntity> {
 		}
 	}
 
-	async findOne(id: string): Promise<UserEntity | null> {
+	async findById(id: string): Promise<UserEntity | null> {
 		try {
-			const findOneResult = await this.prisma.user.findUnique({ where: { id } })
-			return findOneResult
+			const findByIdResult = await this.prisma.user.findUnique({
+				where: { id: id },
+			})
+			return findByIdResult
 		} catch (err) {
 			throw err
 		}
 	}
 
+	async findByEmail(email: string): Promise<UserEntity | null> {
+		try {
+			const findByEmailResult = await this.prisma.user.findUnique({
+				where: { email: email },
+			})
+			return findByEmailResult
+		} catch (err) {
+			throw err
+		}
+	}
 	async update(id: string, data: object): Promise<UserEntity> {
 		try {
 			const updateResult = await this.prisma.user.update({

@@ -1,15 +1,15 @@
 import { Test, TestingModule } from "@nestjs/testing"
-import { UpdateUserCase } from "./update.user.case"
+import { JwtAccessStrategy } from "./jwt.access.strategy"
 
-describe("UserUpdateCase", () => {
-	let provider: UpdateUserCase
+describe("JwtStrategy", () => {
+	let provider: JwtAccessStrategy
 
 	beforeEach(async () => {
 		const module: TestingModule = await Test.createTestingModule({
-			providers: [UpdateUserCase],
+			providers: [JwtAccessStrategy],
 		}).compile()
 
-		provider = module.get<UpdateUserCase>(UpdateUserCase)
+		provider = module.get<JwtAccessStrategy>(JwtAccessStrategy)
 	})
 
 	it("should be defined", () => {

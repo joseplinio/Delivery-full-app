@@ -1,4 +1,4 @@
-export interface UpdateUserInput {
+export type TyUpdateUserInput = {
   id: string
   name: string
   email: string
