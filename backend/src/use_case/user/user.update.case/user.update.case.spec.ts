@@ -1,18 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserUpdateCase } from './user.update.case';
+import { Test, TestingModule } from "@nestjs/testing"
+import { UpdateUserCase } from "./update.user.case"
 
-describe('UserUpdateCase', () => {
-  let provider: UserUpdateCase;
+describe("UserUpdateCase", () => {
+	let provider: UpdateUserCase
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [UserUpdateCase],
-    }).compile();
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			providers: [UpdateUserCase],
+		}).compile()
 
-    provider = module.get<UserUpdateCase>(UserUpdateCase);
-  });
+		provider = module.get<UpdateUserCase>(UpdateUserCase)
+	})
 
-  it('should be defined', () => {
-    expect(provider).toBeDefined();
-  });
-});
+	it("should be defined", () => {
+		expect(provider).toBeDefined()
+	})
+})
