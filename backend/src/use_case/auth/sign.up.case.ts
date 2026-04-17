@@ -18,10 +18,11 @@ export class SignUpCase implements IUseCase<SignUpDto, void | null> {
       const userBody = await this.userMapper.upDtoToDomain(body)
       const hashedPassword = await this.hashService.hash(userBody.password)
 
-      const signUpCaseResult = await this.userRepository.create({
+      await this.userRepository.create({
         ...userBody,
         password: hashedPassword,
       })
+
     } catch (err) {
       throw err
     }
