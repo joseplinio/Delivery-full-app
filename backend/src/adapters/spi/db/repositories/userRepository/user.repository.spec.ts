@@ -47,5 +47,22 @@ describe("UserRepository", () => {
       expect(userReposiotory.create).toHaveBeenCalledWith(userData)
       expect(result).toEqual(expectedResult)
     })
+
+    it("it should return all users", async () => {
+      const expectedResult = [
+        {
+          id: "some-user-id",
+          name: "jose",
+          email: "joseplinio@com.com",
+          password: "hhhh11@@@UUU",
+        },
+      ]
+
+      jest.spyOn(userReposiotory, "findAll").mockResolvedValue(expectedResult)
+      const result = await userReposiotory.findAll()
+
+      expect(userReposiotory.findAll).toHaveBeenCalledWith()
+      expect(result).toEqual(expectedResult)
+    })
   })
 })
