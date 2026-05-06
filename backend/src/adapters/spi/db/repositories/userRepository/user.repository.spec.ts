@@ -81,5 +81,24 @@ describe("UserRepository", () => {
       expect(userReposiotory.findById).toHaveBeenCalledWith(user.id)
       expect(result).toEqual(expectedResult)
     })
+    it("it should only get one user by its email", async () => {
+      const user = {
+        email: "test@domain.com",
+      }
+      const expectedResult = {
+        id: "some-user-id",
+        name: "jose",
+        email: "test@domain.com",
+        password: "hhhh11@@@UUU",
+      }
+
+      jest
+        .spyOn(userReposiotory, "findByEmail")
+        .mockResolvedValue(expectedResult)
+      const result = await userReposiotory.findByEmail(user.email)
+
+      expect(userReposiotory.findByEmail).toHaveBeenCalledWith(user.email)
+      expect(result).toEqual(expectedResult)
+    })
   })
 })
