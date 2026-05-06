@@ -50,18 +50,22 @@ export class AuthController {
 		}
 	}
 
-  @Post("sign-out")
-  @UseGuards(LocalAuthGuard)
-  async signOut(@Req() request) {
-    try {
-      // const signInDto = await this.dtoValidatior.valideDto<SignInDto>(
-      //   SignInDto,
-      //   signInBody,
-      // )
-      //
-      // const signInResult = await this.signInCase.handler(signInDto)
-      //
-      // return signInResult
+	@Post("sign-out")
+	@UseGuards(LocalAuthGuard)
+	async signOut(@Req() request) {
+		try {
+			// const signInDto = await this.dtoValidatior.valideDto<SignInDto>(
+			//   SignInDto,
+			//   signInBody,
+			// )
+			//
+			// const signInResult = await this.signInCase.handler(signInDto)
+			//
+			// return signInResult
+		} catch (err) {
+			throw err
+		}
+	}
 
 	@Get("account")
 	@UseGuards(JwtAccessAuthGuard)

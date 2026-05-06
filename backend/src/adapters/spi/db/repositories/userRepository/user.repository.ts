@@ -7,9 +7,10 @@ import { UserEntity } from "src/entities/user/user.entity"
 export class UserRepository implements IUserRepository<UserEntity, UserEntity> {
 	constructor(private prisma: PrismaService) {}
 
-	async create(body: UserEntity): Promise<void> {
+	async create(body: UserEntity): Promise<UserEntity> {
 		try {
-			await this.prisma.user.create({ data: { ...body } })
+			const createResult = await this.prisma.user.create({ data: { ...body } })
+			return createResult
 		} catch (err) {
 			throw err
 		}

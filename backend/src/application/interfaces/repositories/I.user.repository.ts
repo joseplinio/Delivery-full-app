@@ -1,5 +1,5 @@
 export interface IUserRepository<T, N> {
-  create(body: T): Promise<void | null>
+  create(body: T): Promise<T | null>
   findAll(): Promise<N[] | null>
   findById(id: string): Promise<N | null>
   findByEmail(email: string): Promise<N | null>

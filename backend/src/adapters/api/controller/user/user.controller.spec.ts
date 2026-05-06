@@ -3,7 +3,7 @@ import { UserController } from "./user.controller"
 import { UpdateUserCase } from "src/use_case/user/user.update.case/update.user.case"
 import { UpdateUserInput } from "src/application/interfaces/use_case/user/update.user.input"
 import { DtoValidatorService } from "src/application/services/dto/dto.validator.service"
-import { updateUserDto } from "src/application/interfaces/dto/update.user.dto"
+import { UpdateUserDto } from "src/application/interfaces/dto/update.use.dto"
 
 describe("UserController", () => {
   let controller: UserController
@@ -41,16 +41,14 @@ describe("UserController", () => {
         email: updateUserInput.email,
       })
 
-      jest
-        .spyOn(updateUserCase, "handler")
-        .mockResolvedValue(expectedResult as object)
+      jest.spyOn(updateUserCase, "handler").mockResolvedValue(expectedResult)
 
       const result = await controller.update(updateUserInput.id, {
         ...updateUserInput,
       })
 
       expect(dtoValidatorService.valideDto).toHaveBeenCalledWith(
-        updateUserDto,
+        UpdateUserDto,
         updateUserInput,
       )
       expect(updateUserCase.handler).toHaveBeenCalledWith(updateUserInput)
