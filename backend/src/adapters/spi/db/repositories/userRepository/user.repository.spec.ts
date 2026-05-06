@@ -3,7 +3,7 @@ import { UserRepository } from "./user.repository"
 import type { UserEntity } from "src/entities/user/user.entity"
 
 // NOTE: I need to see the why my tests are thorowig error and
-// I am not sure but I think I need to poor the Prisma righ here 
+// I am not sure but I think I need to poor the Prisma righ here
 describe("UserRepository", () => {
   let userReposiotory: UserRepository
   beforeEach(async () => {
@@ -48,7 +48,7 @@ describe("UserRepository", () => {
       expect(result).toEqual(expectedResult)
     })
 
-    it("it should return all users", async () => {
+    it("it should return a array of users", async () => {
       const expectedResult = [
         {
           id: "some-user-id",
@@ -62,6 +62,23 @@ describe("UserRepository", () => {
       const result = await userReposiotory.findAll()
 
       expect(userReposiotory.findAll).toHaveBeenCalledWith()
+      expect(result).toEqual(expectedResult)
+    })
+    it("it should only get one user by its id", async () => {
+      const user = {
+        id: "some-user-id",
+      }
+      const expectedResult = {
+        id: "some-user-id",
+        name: "jose",
+        email: "joseplinio@com.com",
+        password: "hhhh11@@@UUU",
+      }
+
+      jest.spyOn(userReposiotory, "findById").mockResolvedValue(expectedResult)
+      const result = await userReposiotory.findById(user.id)
+
+      expect(userReposiotory.findById).toHaveBeenCalledWith(user.id)
       expect(result).toEqual(expectedResult)
     })
   })
