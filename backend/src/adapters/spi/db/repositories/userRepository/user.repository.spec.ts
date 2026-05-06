@@ -64,6 +64,7 @@ describe("UserRepository", () => {
       expect(userReposiotory.findAll).toHaveBeenCalledWith()
       expect(result).toEqual(expectedResult)
     })
+
     it("it should only get one user by its id", async () => {
       const user = {
         id: "some-user-id",
@@ -81,6 +82,7 @@ describe("UserRepository", () => {
       expect(userReposiotory.findById).toHaveBeenCalledWith(user.id)
       expect(result).toEqual(expectedResult)
     })
+
     it("it should only get one user by its email", async () => {
       const user = {
         email: "test@domain.com",
@@ -125,5 +127,16 @@ describe("UserRepository", () => {
       expect(result).toEqual(expectedResult)
     })
 
+    it("it should remove the user by its id", async () => {
+      const userData = {
+        id: "some-user-id",
+      }
+
+      jest.spyOn(userReposiotory, "remove").mockResolvedValue(undefined)
+      const result = await userReposiotory.remove(userData.id)
+
+      expect(userReposiotory.remove).toHaveBeenCalledWith(userData.id)
+      expect(result).toEqual(undefined)
+    })
   })
 })
