@@ -9,129 +9,133 @@ import { RefreshCase } from "src/use_case/auth/refresh.case/refresh.case"
 import { SignInDto } from "src/application/interfaces/dto/sign.in.dto"
 
 describe("AuthController", () => {
-  let authController: AuthController
-  let signUpCase: SignUpCase
-  let signInCase: SignInCase
-  let getAccountCase: GetAccountCase
-  let refreshCase: RefreshCase
-  let dtoValidatorService: DtoValidatorService
-  let requestMock = {
-    user: {
-      userId: "some-user-id",
-    },
-  }
+	let authController: AuthController
+	let signUpCase: SignUpCase
+	let signInCase: SignInCase
+	let getAccountCase: GetAccountCase
+	let refreshCase: RefreshCase
+	let dtoValidatorService: DtoValidatorService
+	let requestMock = {
+		user: {
+			userId: "some-user-id",
+		},
+	}
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [AuthController],
-      providers: [
-        { provide: SignUpCase, useValue: { handler: jest.fn() } },
-        { provide: SignInCase, useValue: { handler: jest.fn() } },
-        { provide: RefreshCase, useValue: { handler: jest.fn() } },
-        { provide: GetAccountCase, useValue: { handler: jest.fn() } },
-        { provide: DtoValidatorService, useValue: { valideDto: jest.fn() } },
-      ],
-    }).compile()
+	beforeEach(async () => {
+		const module: TestingModule = await Test.createTestingModule({
+			controllers: [AuthController],
+			providers: [
+				{ provide: SignUpCase, useValue: { handler: jest.fn() } },
+				{ provide: SignInCase, useValue: { handler: jest.fn() } },
+				{ provide: RefreshCase, useValue: { handler: jest.fn() } },
+				{ provide: GetAccountCase, useValue: { handler: jest.fn() } },
+				{ provide: DtoValidatorService, useValue: { valideDto: jest.fn() } },
+			],
+		}).compile()
 
-    authController = module.get<AuthController>(AuthController)
-    signUpCase = module.get<SignUpCase>(SignUpCase)
-    signInCase = module.get<SignInCase>(SignInCase)
-    getAccountCase = module.get<GetAccountCase>(GetAccountCase)
-    refreshCase = module.get<RefreshCase>(RefreshCase)
-    dtoValidatorService = module.get<DtoValidatorService>(DtoValidatorService)
-  })
+		authController = module.get<AuthController>(AuthController)
+		signUpCase = module.get<SignUpCase>(SignUpCase)
+		signInCase = module.get<SignInCase>(SignInCase)
+		getAccountCase = module.get<GetAccountCase>(GetAccountCase)
+		refreshCase = module.get<RefreshCase>(RefreshCase)
+		dtoValidatorService = module.get<DtoValidatorService>(DtoValidatorService)
+	})
 
-  describe("Teting auth's routers", () => {
-    describe("sing-up/", () => {
-      it("it should register a user", async () => {
-        const signUpBody = {
-          name: "Test da Silva",
-          email: "someone@com.com",
-          password: "hhhh11@@@UUU",
-        } as SignUpDto
+	describe("Teting auth's routers", () => {
+		describe("sing-up/", () => {
+			it("it should register a user", async () => {
+				const signUpBody = {
+					name: "Test da Silva",
+					email: "someone@com.com",
+					password: "hhhh11@@@UUU",
+				} as SignUpDto
 
-        jest
-          .spyOn(dtoValidatorService, "valideDto")
-          .mockResolvedValue(signUpBody)
+				const expectedResult = {
+					message: `The user ${signUpBody.name} has been created`,
+				}
 
-        jest.spyOn(signUpCase, "handler").mockResolvedValue(undefined)
+				jest
+					.spyOn(dtoValidatorService, "valideDto")
+					.mockResolvedValue(signUpBody)
 
-        const result = await authController.signUp(signUpBody)
+				jest.spyOn(signUpCase, "handler").mockResolvedValue(expectedResult)
 
-        expect(dtoValidatorService.valideDto).toHaveBeenCalledWith(
-          SignUpDto,
-          signUpBody,
-        )
-        expect(signUpCase.handler).toHaveBeenCalledWith(signUpBody)
-        expect(result).toEqual(undefined)
-      })
-    })
+				const result = await authController.signUp(signUpBody)
 
-    describe("sing-in/", () => {
-      it("it should sign in a user", async () => {
-        const signInBody = {
-          email: "someone@com.com",
-          password: "hhhh11@@@UUU",
-        } as SignInDto
+				expect(dtoValidatorService.valideDto).toHaveBeenCalledWith(
+					SignUpDto,
+					signUpBody,
+				)
+				expect(signUpCase.handler).toHaveBeenCalledWith(signUpBody)
+				expect(result).toEqual(expectedResult)
+			})
+		})
 
-        const expectedResult = {
-          userId: "some-user-id",
-          access_token: "access_token",
-          refresh_token: "refresh_token",
-        }
+		describe("sing-in/", () => {
+			it("it should sign in a user", async () => {
+				const signInBody = {
+					email: "someone@com.com",
+					password: "hhhh11@@@UUU",
+				} as SignInDto
 
-        jest
-          .spyOn(dtoValidatorService, "valideDto")
-          .mockResolvedValue(signInBody)
+				const expectedResult = {
+					userId: "some-user-id",
+					access_token: "access_token",
+					refresh_token: "refresh_token",
+				}
 
-        jest.spyOn(signInCase, "handler").mockResolvedValue(expectedResult)
+				jest
+					.spyOn(dtoValidatorService, "valideDto")
+					.mockResolvedValue(signInBody)
 
-        const result = await authController.signIn(signInBody)
-        expect(dtoValidatorService.valideDto).toHaveBeenCalledWith(
-          SignInDto,
-          signInBody,
-        )
-        expect(signInCase.handler).toHaveBeenCalledWith(signInBody)
-        expect(result).toEqual(expectedResult)
-      })
-    })
+				jest.spyOn(signInCase, "handler").mockResolvedValue(expectedResult)
 
-    describe("account/", () => {
-      // NOTE: I need to study more about it, becouse I most need to test the Guards / Strategies
-      it("it should get the user's account", async () => {
-        const expectedResult = {
-          name: "José Plinio",
-          email: "someone@com.com",
-        }
+				const result = await authController.signIn(signInBody)
+				expect(dtoValidatorService.valideDto).toHaveBeenCalledWith(
+					SignInDto,
+					signInBody,
+				)
+				expect(signInCase.handler).toHaveBeenCalledWith(signInBody)
+				expect(result).toEqual(expectedResult)
+			})
+		})
 
-        jest.spyOn(getAccountCase, "handler").mockResolvedValue(expectedResult)
+		describe("account/", () => {
+			// NOTE: I need to study more about it, becouse I most need to test the Guards / Strategies
+			it("it should get the user's account", async () => {
+				const expectedResult = {
+					name: "José Plinio",
+					email: "someone@com.com",
+				}
 
-        const result = await authController.account(requestMock)
+				jest.spyOn(getAccountCase, "handler").mockResolvedValue(expectedResult)
 
-        expect(getAccountCase.handler).toHaveBeenCalledWith(
-          requestMock.user.userId,
-        )
-        expect(result).toEqual(expectedResult)
-      })
-    })
+				const result = await authController.account(requestMock)
 
-    describe("refresh/", () => {
-      // NOTE: I need to study more about it, becouse I most need to test the Guards / Strategies
-      it("it should give a access_token for the user", async () => {
-        const expectedResult = {
-          userId: "some-user-id",
-          access_token: "access_token",
-        }
+				expect(getAccountCase.handler).toHaveBeenCalledWith(
+					requestMock.user.userId,
+				)
+				expect(result).toEqual(expectedResult)
+			})
+		})
 
-        jest.spyOn(refreshCase, "handler").mockResolvedValue(expectedResult)
+		describe("refresh/", () => {
+			// NOTE: I need to study more about it, becouse I most need to test the Guards / Strategies
+			it("it should give a access_token for the user", async () => {
+				const expectedResult = {
+					userId: "some-user-id",
+					access_token: "access_token",
+				}
 
-        const result = await authController.refresh(requestMock)
+				jest.spyOn(refreshCase, "handler").mockResolvedValue(expectedResult)
 
-        expect(refreshCase.handler).toHaveBeenCalledWith(
-          requestMock.user.userId,
-        )
-        expect(result).toEqual(expectedResult)
-      })
-    })
-  })
+				const result = await authController.refresh(requestMock)
+
+				expect(refreshCase.handler).toHaveBeenCalledWith(
+					requestMock.user.userId,
+				)
+				expect(result).toEqual(expectedResult)
+			})
+		})
+	})
 })
