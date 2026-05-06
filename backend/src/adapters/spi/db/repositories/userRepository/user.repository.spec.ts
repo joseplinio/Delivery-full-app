@@ -100,5 +100,30 @@ describe("UserRepository", () => {
       expect(userReposiotory.findByEmail).toHaveBeenCalledWith(user.email)
       expect(result).toEqual(expectedResult)
     })
+
+    it("it should update up a user's data", async () => {
+      const userData = { id: "some-user-id" }
+
+      const userNewData = {
+        name: "test01",
+        email: "test@domain.com",
+      }
+      const expectedResult = {
+        id: "some-user-id",
+        name: "test01",
+        email: "test@domain.com",
+        password: "hhhh11@@@UUU",
+      }
+
+      jest.spyOn(userReposiotory, "update").mockResolvedValue(expectedResult)
+      const result = await userReposiotory.update(userData.id, userNewData)
+
+      expect(userReposiotory.update).toHaveBeenCalledWith(
+        userData.id,
+        userNewData,
+      )
+      expect(result).toEqual(expectedResult)
+    })
+
   })
 })
